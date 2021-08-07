@@ -9,10 +9,10 @@ import { Button } from 'react-bootstrap';
 
 import Map from './Component/Map';
 import Weather from './Component/Weather';
-
-
+import Movies from './Component/Movies';
 
 import './App.css';
+
 
 class App extends React.Component {
 
@@ -27,11 +27,12 @@ class App extends React.Component {
       displayErr: false,
       errMsg: 'unable to geocode',
       weatherArr:[],
+      movieArr:[],
 
     }
   }
 
-  //==============================================location Map================================================
+  //==============================================location Map lab6================================================
   getLocationData = async (event) => {
     event.preventDefault();
 
@@ -51,9 +52,24 @@ class App extends React.Component {
         lat: locResult.data[0].lat,
         lon: locResult.data[0].lon,
         showMap: true,
-       
-
       })
+
+ //=================================================Weather API lab8=============================================================
+// http://localhost:3001/getWeather?lat=47.6038321&lon=-122.3300624&searchQuery=Seattle
+let URLServer=`http://localhost:3001/getWeather?lat=${this.state.lat}&lon=${this.state.lon}&searchQuery=${city}`;
+let weatherResult= await axios.get(URLServer)
+this.setState({
+  weatherArr : weatherResult.data
+})
+
+
+//=======================================================MOvies APi Lab8==========================================================================
+// http://localhost:3001/getMovie?city=amman
+const URLMovies= `http://localhost:3001/getMovie?city=${city}`
+let movieResult= await axios.get(URLMovies)
+this.setState({
+  movieArr : movieResult.data
+})
 
     }
 
@@ -63,26 +79,25 @@ class App extends React.Component {
         showMap:false,
       })
     }
-    this.getWeather();
+    // this.getWeather(city)
   }
 
-  //============================================Weather=====================================================
+  //============================================Weather local lab7=====================================================
 
-  getWeather= async(city)=>{
+  // getWeather= async(city)=>{
 
-    // http://localhost:3001/weather?lat=47.6038321&lon=-122.3300624&searchQuery=Seattle
-    let URL =` http://localhost:3001/weather?lat=${this.state.lat}&lon=${this.state.lon}&searchQuery=${this.state.city}`
 
-    let weatherResult= await axios.get(URL);
+  //   // http://localhost:3001/weather?lat=47.6038321&lon=-122.3300624&searchQuery=Seattle
+  //   let URL =` http://localhost:3001/weather?lat=${this.state.lat}&lon=${this.state.lon}&searchQuery=${this.state.city}`
+  //   let weatherResult= await axios.get(URL);
+  //    this.setState({
+  //      weatherArr: weatherResult.data    
+  //    })
+  //    //console.log(this.state.weatherArr)
+  // };
 
-     this.setState({
-       weatherArr: weatherResult.data
-       
-     })
-     //console.log(this.state.weatherArr)
-  };
 
-//==============================================================================================================
+//===================================================================================================================================================
   render() {
     return (
       <div>
@@ -123,6 +138,9 @@ class App extends React.Component {
         />
 
         <Weather weatherArr={this.state.weatherArr}/>
+
+        <Movies movieArr={this.state.movieArr}
+        ></Movies>
        
       </div>
     )
